@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Insta Comment DM Automator</title>
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/layout.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/pages.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">IC</div>
+        <div>
+          <p class="brand-title">Insta Comment</p>
+          <span class="brand-subtitle">DM Automator</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav" id="sidebarNav" aria-label="Main navigation"></nav>
+
+      <div class="sidebar-footer">
+        <span class="connection-dot"></span>
+        <span>Local workspace</span>
+      </div>
+    </aside>
+
+    <div class="app-main">
+      <header class="topbar">
+        <button class="icon-button mobile-menu-button" id="menuToggle" type="button" aria-label="Open navigation">
+          <span class="icon-bars" aria-hidden="true"></span>
+        </button>
+        <div class="topbar-copy">
+          <p class="eyebrow">Automation control center</p>
+          <h1 id="pageTitle">Dashboard</h1>
+        </div>
+        <div class="topbar-actions">
+          <label class="global-search">
+            <span class="field-icon" aria-hidden="true">/</span>
+            <input id="globalSearch" type="search" placeholder="Search current page" autocomplete="off" />
+          </label>
+          <button class="button button-primary" id="globalAddRule" type="button">
+            <span aria-hidden="true">+</span>
+            <span>Rule</span>
+          </button>
+        </div>
+      </header>
+
+      <main class="page-content" id="app" tabindex="-1"></main>
+    </div>
+  </div>
+
+  <nav class="bottom-nav" id="bottomNav" aria-label="Mobile navigation"></nav>
+
+  <div class="modal-root" id="modalRoot" aria-live="polite"></div>
+  <div class="toast-region" id="toastRegion" aria-live="polite" aria-atomic="true"></div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,80 @@
+.activity-list {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.activity-item {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: var(--space-1);
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.activity-item:last-child {
+  border-bottom: 0;
+}
+
+.activity-copy {
+  display: grid;
+  gap: 2px;
+}
+
+.quick-actions {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.settings-list {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: var(--space-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.preference-copy {
+  display: grid;
+  gap: 2px;
+}
+
+.status-line {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.text-clip {
+  max-width: 320px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.actions-stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+}
+
+.settings-danger {
+  border-color: #fecaca;
+  background: var(--danger-soft);
+}
+
+.settings-danger .button {
+  flex-shrink: 0;
+}

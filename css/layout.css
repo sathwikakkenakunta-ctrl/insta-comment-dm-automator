@@ -1,0 +1,181 @@
+.app-shell {
+  display: grid;
+  grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
+  min-height: 100vh;
+}
+
+.sidebar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  height: 100vh;
+  padding: var(--space-3);
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.brand-mark {
+  display: grid;
+  width: 40px;
+  height: 40px;
+  place-items: center;
+  border-radius: var(--radius);
+  background: var(--text);
+  color: #ffffff;
+  font-weight: 800;
+}
+
+.brand-title {
+  font-weight: 800;
+  letter-spacing: 0;
+}
+
+.brand-subtitle {
+  display: block;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.sidebar-nav {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.sidebar-footer {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin-top: auto;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.connection-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--success);
+}
+
+.app-main {
+  min-width: 0;
+}
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 15;
+  display: flex;
+  min-height: var(--topbar-height);
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-4);
+  background: rgba(246, 248, 251, 0.88);
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(14px);
+}
+
+.topbar-copy {
+  min-width: 0;
+}
+
+.eyebrow {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.topbar h1 {
+  font-size: 24px;
+  line-height: 1.2;
+}
+
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-width: min(520px, 45vw);
+}
+
+.page-content {
+  width: min(1360px, 100%);
+  margin: 0 auto;
+  padding: var(--space-4);
+}
+
+.page-content:focus {
+  outline: none;
+}
+
+.page {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.page-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.page-title-block {
+  display: grid;
+  gap: 4px;
+}
+
+.page-title-block h2 {
+  font-size: 22px;
+}
+
+.page-title-block p {
+  color: var(--muted);
+}
+
+.page-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+}
+
+.grid {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.grid-4 {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.grid-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.split-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
+  gap: var(--space-2);
+  align-items: start;
+}
+
+.filter-bar {
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) repeat(2, minmax(160px, 220px));
+  gap: var(--space-1);
+  align-items: end;
+}
+
+.bottom-nav {
+  display: none;
+}
