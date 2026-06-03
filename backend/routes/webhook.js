@@ -33,6 +33,8 @@ router.post("/instagram", async (req, res, next) => {
   try {
     const payload = req.body;
 
+    console.log("[webhook] Webhook received");
+
     if (!payload || typeof payload !== "object" || Array.isArray(payload)) {
       console.warn("[webhook] Ignored invalid Instagram webhook payload");
       return res.status(400).json({
@@ -41,22 +43,24 @@ router.post("/instagram", async (req, res, next) => {
       });
     }
 
+    console.log("[webhook] Incoming payload:");
+    console.log(JSON.stringify(payload, null, 2));
+
     const comments = parseWebhookPayload(payload);
 
-    if (comments.length === 0) {
-      console.log("[webhook] Received Instagram webhook with no comment data");
-      return res.status(200).json({
-        ok: true,
-        received: true,
-        stored: 0,
-        duplicates: 0
-      });
+    const result = await addComments(comments);
+
+    for (const item of result.addedItems) {
+      if (item.status === "WEBHOOK_DEBUG") {
+        console.log(`[webhook] Stored debug event ${item.id}`);
+      } else {
+        console.log(`[webhook] Parsed comment ${item.commentId || item.id}`);
+      }
     }
 
-    const result = await addComments(comments);
-    console.log(
-      `[webhook] Stored ${result.added} comment(s), skipped ${result.duplicates} duplicate(s)`
-    );
+    for (const item of result.duplicateItems) {
+      console.log(`[webhook] Duplicate ignored ${item.commentId || item.id}`);
+    }
 
     return res.status(200).json({
       ok: true,

@@ -23,19 +23,28 @@ async function getComments() {
 async function addComments(newComments) {
   return enqueueWrite(async () => {
     const comments = await readComments();
-    const existingIds = new Set(comments.map((comment) => comment.id || comment.commentId));
+    const existingIds = new Set(comments.map((comment) => comment.id).filter(Boolean));
+    const existingCommentIds = new Set(
+      comments.map((comment) => comment.commentId).filter(Boolean)
+    );
     const accepted = [];
+    const duplicateItems = [];
     let duplicates = 0;
 
     for (const comment of newComments) {
       const id = comment && (comment.id || comment.commentId);
+      const commentId = comment && comment.commentId;
 
-      if (!id || existingIds.has(id)) {
+      if (!id || existingIds.has(id) || (commentId && existingCommentIds.has(commentId))) {
         duplicates += 1;
+        duplicateItems.push(comment);
         continue;
       }
 
       existingIds.add(id);
+      if (commentId) {
+        existingCommentIds.add(commentId);
+      }
       accepted.push(comment);
     }
 
@@ -45,7 +54,9 @@ async function addComments(newComments) {
 
     return {
       added: accepted.length,
-      duplicates
+      duplicates,
+      addedItems: accepted,
+      duplicateItems
     };
   });
 }
