@@ -6,6 +6,7 @@ const cors = require("cors");
 const webhookRoutes = require("./routes/webhook");
 const commentsRoutes = require("./routes/comments");
 const messagesRoutes = require("./routes/messages");
+const syncRoutes = require("./routes/sync");
 const { ensureStorage } = require("./services/storage");
 
 const app = express();
@@ -25,6 +26,7 @@ app.get("/health", (req, res) => {
 app.use("/webhook", webhookRoutes);
 app.use("/", commentsRoutes);
 app.use("/", messagesRoutes);
+app.use("/", syncRoutes);
 
 app.use((req, res) => {
   res.status(404).json({

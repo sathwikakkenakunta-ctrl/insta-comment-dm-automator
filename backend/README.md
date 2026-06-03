@@ -106,6 +106,16 @@ curl -X POST http://localhost:5000/send-dm \
 
 The backend does not make real Meta API calls yet. It marks the comment as `DM_SENT` in `data/comments.json`.
 
+## Backup Comment Sync
+
+Webhooks are the primary comment source. If real-time webhook comments are not arriving, manually fetch recent Instagram comments with:
+
+```bash
+curl http://localhost:5000/sync-comments
+```
+
+This endpoint uses `INSTAGRAM_ACCOUNT_ID` and `INSTAGRAM_ACCESS_TOKEN` from `.env`, fetches recent media, fetches comments for each media item, stores new comments in `data/comments.json`, and skips duplicates by `commentId`.
+
 ## Deploy To Render
 
 This backend is ready to deploy as a Render Web Service. The app listens on `process.env.PORT`, which Render provides automatically.

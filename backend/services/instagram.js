@@ -30,6 +30,43 @@ async function sendPrivateReply(commentId, message) {
   };
 }
 
+async function fetchRecentInstagramComments() {
+  const accessToken = process.env.INSTAGRAM_ACCESS_TOKEN;
+  const accountId = process.env.INSTAGRAM_ACCOUNT_ID;
+
+  if (!accessToken || !accountId) {
+    const err = new Error(
+      "INSTAGRAM_ACCESS_TOKEN and INSTAGRAM_ACCOUNT_ID are required for comment sync"
+    );
+    err.status = 500;
+    throw err;
+  }
+
+  const media = await fetchRecentMedia(accountId, accessToken);
+  const comments = [];
+
+  for (const mediaItem of media) {
+    let mediaComments = [];
+
+    try {
+      mediaComments = await fetchMediaComments(mediaItem.id, accessToken);
+    } catch (err) {
+      console.warn(
+        `[instagram] Failed to fetch comments for media ${mediaItem.id}: ${err.message}`
+      );
+    }
+
+    for (const comment of mediaComments) {
+      comments.push(normalizeSyncedComment(comment, mediaItem));
+    }
+  }
+
+  return {
+    mediaCount: media.length,
+    comments
+  };
+}
+
 function parseWebhookPayload(payload) {
   const parsedComments = [];
   const seen = new Set();
@@ -193,6 +230,100 @@ function createDebugWebhookEvent(payload, receivedAt) {
   };
 }
 
+async function fetchRecentMedia(accountId, accessToken) {
+  const fields = "id,caption,timestamp,permalink,media_type";
+  const url = graphUrl(
+    `/${accountId}/media`,
+    {
+      fields,
+      limit: "10",
+      access_token: accessToken
+    }
+  );
+
+  const data = await graphGet(url);
+  return Array.isArray(data.data) ? data.data : [];
+}
+
+async function fetchMediaComments(mediaId, accessToken) {
+  const fields = "id,text,username,timestamp,like_count";
+  const url = graphUrl(
+    `/${mediaId}/comments`,
+    {
+      fields,
+      limit: "50",
+      access_token: accessToken
+    }
+  );
+
+  const data = await graphGet(url);
+  return Array.isArray(data.data) ? data.data : [];
+}
+
+async function graphGet(url) {
+  const response = await fetch(url);
+  const text = await response.text();
+  let data = {};
+
+  try {
+    data = text ? JSON.parse(text) : {};
+  } catch (err) {
+    const parseError = new Error("Instagram Graph API returned invalid JSON");
+    parseError.status = response.status || 502;
+    throw parseError;
+  }
+
+  if (!response.ok) {
+    const message =
+      data && data.error && data.error.message
+        ? data.error.message
+        : `Instagram Graph API request failed with ${response.status}`;
+    const err = new Error(message);
+    err.status = response.status;
+    throw err;
+  }
+
+  return data;
+}
+
+function graphUrl(pathname, params) {
+  const url = new URL(`https://graph.facebook.com/v19.0${pathname}`);
+
+  for (const [key, value] of Object.entries(params)) {
+    url.searchParams.set(key, value);
+  }
+
+  return url;
+}
+
+function normalizeSyncedComment(comment, mediaItem) {
+  const receivedAt = new Date().toISOString();
+  const commentId = firstString(comment.id, comment.comment_id);
+  const commentText = firstString(comment.text, comment.message);
+
+  return {
+    id: commentId,
+    source: "instagram_sync",
+    rawPayload: {
+      media: mediaItem,
+      comment
+    },
+    mediaId: firstString(mediaItem.id, ""),
+    commentId,
+    username: firstString(comment.username, ""),
+    commentText,
+    status: "NEW",
+    receivedAt,
+    text: commentText,
+    userId: "",
+    webhookField: "manual_sync",
+    raw: {
+      media: mediaItem,
+      comment
+    }
+  };
+}
+
 function firstObject(...values) {
   for (const value of values) {
     if (value && typeof value === "object" && !Array.isArray(value)) {
@@ -225,6 +356,7 @@ function firstString(...values) {
 
 module.exports = {
   sendPrivateReply,
+  fetchRecentInstagramComments,
   verifyToken,
   parseWebhookPayload
 };
