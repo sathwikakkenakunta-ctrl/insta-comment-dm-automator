@@ -46,6 +46,12 @@ For production-style startup:
 npm start
 ```
 
+Or explicitly:
+
+```bash
+npm run start:prod
+```
+
 ## Test Health
 
 Open this URL in a browser:
@@ -99,3 +105,64 @@ curl -X POST http://localhost:5000/send-dm \
 ```
 
 The backend does not make real Meta API calls yet. It marks the comment as `DM_SENT` in `data/comments.json`.
+
+## Deploy To Render
+
+This backend is ready to deploy as a Render Web Service. The app listens on `process.env.PORT`, which Render provides automatically.
+
+### Option 1: Render Blueprint
+
+Use the root-level `render.yaml` from this repository. It points Render at the `backend` folder, installs dependencies, starts the Express server, and checks `/health`.
+
+Required Render environment variables:
+
+```text
+META_VERIFY_TOKEN
+INSTAGRAM_ACCESS_TOKEN
+INSTAGRAM_ACCOUNT_ID
+```
+
+Do not put real tokens in Git. Add them only in the Render dashboard under Environment.
+
+### Option 2: Manual Web Service
+
+Create a new Render Web Service with these settings:
+
+```text
+Root Directory: backend
+Build Command: npm install
+Start Command: npm start
+Health Check Path: /health
+```
+
+Then add the same environment variables in Render.
+
+### Verify Deployment
+
+After deployment, open:
+
+```text
+https://your-render-service.onrender.com/health
+```
+
+Expected JSON shape:
+
+```json
+{
+  "ok": true,
+  "service": "commentflow-backend",
+  "timestamp": "..."
+}
+```
+
+Webhook verification can be tested with:
+
+```bash
+curl "https://your-render-service.onrender.com/webhook/instagram?hub.mode=subscribe&hub.verify_token=YOUR_VERIFY_TOKEN&hub.challenge=test_challenge"
+```
+
+Expected response:
+
+```text
+test_challenge
+```
